@@ -1,0 +1,85 @@
+version: '3.9'
+
+x-common: &common
+  environment:
+    &common-env
+    POSTGRES_USER: future_demand
+    POSTGRES_PASSWORD: future
+    DB_NAME: future_demand_db
+    HOST: postgres
+
+
+services:
+  postgres:
+    build: ./db
+    container_name: postgres
+    environment:
+      POSTGRES_USER: future_demand
+      POSTGRES_PASSWORD: future
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD", "pg_isready",  "-d", "${DB_NAME}", "-U", "${POSTGRES_USER}"] 
+      interval: 5s
+      retries: 5
+    restart: always
+    networks:
+      - future-net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    volumes:
+    - ./es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: curl -u elastic:elastic -s -f elasticsearch:9200/_cat/health >/dev/null || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+    - 9200:9200
+    networks:
+      - future-net
+    
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.0
+    depends_on:
+        elasticsearch:
+          condition: service_healthy
+    ports:
+    - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: 'http://elasticsearch:9200'
+    networks:
+      - future-net
+  
+  app:
+    <<: *common
+    build: ./python_scripts/
+    container_name: future_app
+    environment:
+      <<: *common-env
+      DBNAME: future_demand_db
+      HOST: postgres
+    depends_on:
+      postgres:
+          condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    restart: always
+    tty: true
+    volumes:
+      - ./plots:/code/plots
+      - ./python_scripts/scraper_writer/scrape_logs:/code/scrape_logs
+    networks:
+      - future-net
+  
+
+networks:
+  future-net: 
+    driver: bridge

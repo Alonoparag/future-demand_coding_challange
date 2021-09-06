@@ -1,0 +1,61 @@
+date:
+    css: '#content > div.mod-event-view.corall-violet > div > div.slider > div.event-info > div > div.top > p.date-time-location > span.date'
+    xpath: null
+    type: Text
+time:
+    css: '#content > div.mod-event-view.corall-violet > div > div.slider > div.event-info > div > div.top > p.date-time-location > span.time'
+    xpath: null
+    type: Text
+location:
+    css: '#content > div.mod-event-view.corall-violet > div > div.slider > div.event-info > div > div.top > p.location'
+    xpath: null
+    type: Text
+title:
+    css: '#content > div.mod-event-view.corall-violet > div > div.slider > div.event-info > div > div.top > p.title'
+    xpath: null
+    type: Text
+surtitle:
+    css: p.surtitle
+    xpath: null
+    type: Text
+subtitle:
+    css: p.subtitle
+    xpath: null
+    type: Text
+artists:
+    css: 'div > div.artists-musical-pieces > div > strong > a'
+    xpath: null
+    multiple: true
+    type: Text
+musical_pieces:
+    css: 'div > div.artists-musical-pieces > div.musical-piece'
+    xpath: null
+    multiple: true
+    type: Text
+additional_information:
+    css: 'div.artists-musical-pieces p'
+    xpath: null
+    multiple: true
+    type: Text
+biography:
+    css: 'div.left div.tab-pane p:nth-of-type(2)'
+    xpath: null
+    type: Text
+performance_times:
+    css: 'div#tab-event-view-fringe-events.tab-pane div.text p:nth-of-type(2)'
+    xpath: null
+    type: Text
+performance_duration:
+    css: 'div#tab-event-view-fringe-events.tab-pane div.text p:nth-of-type(1) strong:nth-of-type(2)'
+    xpath: null
+    type: Text
+image_link:
+    css: 'div#event-view-slider div:nth-of-type(2)'
+    xpath: null
+    type: Attribute
+    attribute: style
+    children:
+        image_style:
+            css: ""
+            type: Attribute
+            attribute: style

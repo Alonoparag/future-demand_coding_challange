@@ -1,0 +1,5 @@
+event_links:
+    css: '.entry div div.event-info div p.title a'
+    xpath: null
+    multiple: true
+    type: Link
